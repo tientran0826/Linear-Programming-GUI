@@ -71,29 +71,7 @@ class SimplexSolver:
            whether to print the tableau at every iteration
         """
 
-
-
         with self.tableau as t:
-            # if incomplete basis, use two-phase method
-            # if -1 in t.basis:
-            #     print("No identifiable basis. Using two-phase method.")
-
-            #     # solve phase 1 problem
-            #     t.add_artificial_variables()
-            #     print(f"\nPhase I Tableau:")
-            #     sol = self.solve(max_iterations=max_iterations)
-
-            #     # if phase I is infeasible
-            #     if not sol.solution:
-            #         return sol
-
-            #     # begin solving phase II
-            #     t.drop_artificial_variables()
-            #     print(f'\nPhase II Tableau:')
-
-            # # print starting/phase 2 tableau
-            # print(f'{t}\n')
-
             iterations = 0
             steps = []
             steps.append(t.tab.copy())
@@ -109,7 +87,8 @@ class SimplexSolver:
                 pivot_arounds.append((t.pivot_idx[0] - 1, t.pivot_idx[1]))
                 iterations += 1
             steps.append(t.tab.copy())
-            # resort to Bland's rule if necessary
+            
+            # use Bland's rule 
             if not use_blands_rule:
                 print("Possible Cycling detected. Resorting to Bland's Rule.")
                 return self.solve(use_blands_rule=True)
@@ -151,12 +130,12 @@ class Solution:
 
         # calculate solution if optimal
         if self.state == "Optimal":
-            self.solution = [0.0] * (max(basis) + 1)  # start from zero vector
+            self.solution = [0.0] * (len(var_none) + No_var)  # start from zero vector
             for i, j in zip(basis, solution):
                 self.solution[i] = j
             if len(var_none) != 0:
                 for i in var_none:
-                    self.solution[i] = self.solution[i] + self.solution[i + 1] 
+                    self.solution[i] = self.solution[i] - self.solution[i + 1] 
                 for i in var_none:
                     del self.solution[i+1] 
             if (len(self.solution) >= No_var):
