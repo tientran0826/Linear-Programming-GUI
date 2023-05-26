@@ -10,7 +10,7 @@ An application designed to solve linear programming problems using three methods
 
 ## Release
 
-![Demo Release](https://github.com/tientran0826/OptiSolver/tree/v1.0.0)
+[Demo Release](https://github.com/tientran0826/OptiSolver/archive/refs/tags/v1.0.0.zip)
 
 ## Demo
 ![Demo](https://raw.githubusercontent.com/tientran0826/OptiSolver/main/images/demo.png)
