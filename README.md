@@ -9,7 +9,7 @@
 An application designed to solve linear programming problems using three methods: Dantzig's simplex method, Bland's method, and two-phase simplex method. The interface is built using the Tkinter framework.
 
 ## Release
-Demo version with 2 methods: Dantzig's simplex and Bland.
+Demo version with 2 methods: Dantzig's simplex and Bland. </br>
 [Demo Release](https://github.com/tientran0826/OptiSolver/archive/refs/tags/v1.0.0.zip)
 
 ## Demo
