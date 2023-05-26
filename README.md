@@ -9,4 +9,4 @@
 An application used to solve linear programming problems with an interface built using the Tkinter framework.
 
 ## Demo
-![Demo]()
+![Demo](https://raw.githubusercontent.com/tientran0826/OptiSolver/main/images/demo.png)
