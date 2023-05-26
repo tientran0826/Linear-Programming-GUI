@@ -6,11 +6,11 @@
 
 ## Introduction
 
-An application used to solve linear programming problems with an interface built using the Tkinter framework.
+An application designed to solve linear programming problems using three methods: Dantzig's simplex method, Bland's method, and two-phase simplex method. The interface is built using the Tkinter framework.
 
 ## Release
 
 ![Demo Release](https://github.com/tientran0826/OptiSolver/tree/v1.0.0)
 
 ## Demo
-![Demo]()
+![Demo](https://raw.githubusercontent.com/tientran0826/OptiSolver/main/images/demo.png)
