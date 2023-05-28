@@ -212,7 +212,7 @@ class two_phase_simplex():
         if (( self.table[-1][self.var]) != -1) or \
             len([i for i in self.table[-1] if i == -1]) > 2  or \
             (len([i for i in self.table[-1] if i == -1]) == 2 and self.table[-1][self.var] != -1) or \
-            self.RHS != 0:
+            self.RHS[-1] != 0:
             print('The problem is infeasible')
             exit()
         
