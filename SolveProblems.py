@@ -1,5 +1,5 @@
 from simplex_method.solver import SimplexSolver
-#from simplex_method.two_phase_simplex import two_phase_simplex
+from simplex_method.two_phase_simplex import two_phase_simplex
 from Normalization import make_standard_form
 
 def solve_problem(user_inputs):
