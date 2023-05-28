@@ -66,7 +66,10 @@ class two_phase_simplex():
                 final_opt_pnt.append(self.table[opt_point.index(i)][-1])
             else:
                 final_opt_pnt.append(0.0)
-
+        if len(final_opt_pnt) < self.var:
+            for i in range(self.var - len(final_opt_pnt)):
+                final_opt_pnt.append(0.0)
+                
         return final_opt_pnt, opt_value
 
     def standard_form(self):
@@ -206,16 +209,26 @@ class two_phase_simplex():
         print("\n1st Phase....")
         opt_point = self.simplex(init_opt_pt)
         
+        if (( self.table[-1][self.var]) != -1) or \
+            len([i for i in self.table[-1] if i == -1]) > 2  or \
+            (len([i for i in self.table[-1] if i == -1]) == 2 and self.table[-1][self.var] != -1) or \
+            self.RHS != 0:
+            print('The problem is infeasible')
+            exit()
         
         # remove artificial variable set original OP function
         self.table = np.delete(self.table, artf_vars, axis=1)
         self.table[-1] = Z
+        
+
+        
         # check for the identity matrix
         for row, col in enumerate(opt_point):
             if col >= len(self.table[-1]):
                 print('The problem is infeasible')
                 exit()
-            self.table[-1] -= self.table[-1][col] * self.table[row]
+            if col < self.var:
+                self.table[-1] -= self.table[-1][col] * self.table[row]
 
         # call 2nd phase
         print("\n2nd Phase....")
