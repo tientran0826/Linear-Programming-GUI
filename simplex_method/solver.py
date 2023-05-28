@@ -90,7 +90,6 @@ class SimplexSolver:
             
             # use Bland's rule 
             if not use_blands_rule:
-                print("Possible Cycling detected. Resorting to Bland's Rule.")
                 return self.solve(use_blands_rule=True)
 
             # if no solution if found
@@ -119,8 +118,10 @@ class Solution:
         basis : indices of the basis variables
         solution : raw solution from tableau
         """
+        
         self.state = state
         self.check_min = check_min
+        
         # objective value
         self.obj_value = {
             "Optimal": obj_value * check_min,
@@ -132,15 +133,19 @@ class Solution:
         if self.state == "Optimal":
             self.solution = [0.0] * (len(var_none) + No_var)  # start from zero vector
             for i, j in zip(basis, solution):
-                self.solution[i] = j
+                if i < (len(var_none) + No_var):
+                    self.solution[i] = j
+                
             if len(var_none) != 0:
                 for i in var_none:
                     self.solution[i] = self.solution[i] - self.solution[i + 1] 
                 for i in var_none:
                     del self.solution[i+1] 
+                    
             if (len(self.solution) >= No_var):
                 self.solution = self.solution[:No_var]
                 self.solution*=(list_Var_positive) 
+        
         else:
             self.solution = None
        
