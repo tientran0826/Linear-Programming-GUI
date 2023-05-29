@@ -7,7 +7,7 @@ def solve_problem(user_inputs):
     
     if (any(x < 0 for x in problem['constraints'])):
         check_min = 1
-        if user_inputs['objective'] == 'max':
+        if user_inputs['objective'] == 'maximize':
             check_min = -1
         # initialize object
         simx = two_phase_simplex()
@@ -17,11 +17,15 @@ def solve_problem(user_inputs):
 
         # call two-phase simplex method
         opt_point, opt_value = simx.two_phase()
-
-        # print results
-        print ('\nOutput:\n')
-        print ('Optimal point is {}'.format(opt_point))
-        print ('Optimal value is {}'.format(opt_value*check_min))
+        print(opt_value)
+        if not opt_value:
+            sol = f"{opt_point}"
+        elif opt_value in ["Inf","-Inf"]:
+            sol = f"{opt_point}, Gia tri Z = {opt_value}"
+        else:
+            sol = f"{opt_point}, Gia tri Z = {opt_value*check_min}"
+        
+        return problem,sol,None,None
     else:
         problem['obj_func']*= -1
         
@@ -44,4 +48,5 @@ def solve_problem(user_inputs):
                         check_min = check_min, 
                         var_none = problem['var_none'],
                         list_Var_positive = problem['list_Var_positive'],)
+
         return problem,sol,steps,pivot_arounds

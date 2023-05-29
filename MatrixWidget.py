@@ -216,7 +216,7 @@ class MatrixWidget:
             c.delete(0,'end')
 
         for i in self.inequality_constraints:
-            i.current(0)
+            i.current(1)
         
         for b in self.b_values:
             b.delete(0,'end')

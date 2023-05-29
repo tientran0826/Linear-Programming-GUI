@@ -13,6 +13,6 @@ if __name__ == '__main__':
     menu = MenuBar(root)
     # Create a problem initialization form
     input_widge = InputWidget(root)
-
+    
     root.mainloop()
     
