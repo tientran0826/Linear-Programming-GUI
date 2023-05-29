@@ -139,8 +139,8 @@ class Solution:
             if len(var_none) != 0:
                 for i in var_none:
                     self.solution[i] = self.solution[i] - self.solution[i + 1] 
-                for i in var_none:
-                    del self.solution[i+1] 
+                for i in var_none[:-1]:
+                    del self.solution[i+1]
                     
             if (len(self.solution) >= No_var):
                 self.solution = self.solution[:No_var]

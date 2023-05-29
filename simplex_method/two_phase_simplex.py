@@ -32,23 +32,33 @@ class two_phase_simplex():
         
     def pprint(self, table,list_var,pivot_col,pivot_row):
         '''Pretty print a table to check intermediate results'''
+        pivot_around = None
         if(pivot_col != -1):
             print(f"[] Pivoted around "
                                 f"{pivot_col, pivot_row}")
+            pivot_around = (pivot_col, pivot_row)
         for i in range(len(table[-1]) - 1):
             print ('{:>4}x'.format(i+1),end ='')
         print ('{:>5}'.format('RHS'))        
         print('z  [',end='')
+        tab_array = []
+        temp = []
         for j in table[-1]:
+            temp.append(round(j, 2))
             print(str(round(j, 2)) + ' ', end='')
+        tab_array.append(temp)
         print(']')
         for i in range(len(table) - 1):
             print('{0}x ['.format(list_var[i] + 1),end='')
+            temp = []
             for j in table[i]:
+                temp.append(round(j, 2))
                 print(str(round(j, 2)) + ' ', end='')
+            tab_array.append(temp)
             print(']')
         print()
 
+        return pivot_around, tab_array
 
     def final_results(self, opt_point):
         '''post-processing of results'''
@@ -140,8 +150,12 @@ class two_phase_simplex():
         '''
         Loop until the optimal point is reached or we get an infeasible solution
         '''
-
-        self.pprint(self.table,self.list_var,-1,-1)
+        steps = []
+        pivot_arounds = []
+        pivot_around, table = self.pprint(self.table,self.list_var,-1,-1)
+        
+        steps.append(table)
+        pivot_arounds.append(pivot_around)
         while not np.all(self.table[-1][:-1] <= 0):
             pivot_col = np.argmax(self.table[-1][:-1])
             # check for feasibility
@@ -151,13 +165,13 @@ class two_phase_simplex():
                 opt = "-Inf"
                 if self.user_input['objective'] == 'maximize':
                     opt = "Inf"
-                return opt
+                return opt,pivot_around,steps
                 
                 
             theta = self.table[:, -1][:-1] / self.table[:, pivot_col][:-1]
             # check for feasibility
             if np.all(theta < 0):
-                return None
+                return None,pivot_around,steps
                 
             # set negative ratios to some large number (+ infinity)
             theta[self.table[:, -1][:-1] < 0] = float('inf')
@@ -174,11 +188,14 @@ class two_phase_simplex():
                         self.table[pivot_row]
             self.list_var[pivot_row] = pivot_col
             #print(self.table)
-            self.pprint(self.table,self.list_var,pivot_col,pivot_row)
+            pivot_around,table = self.pprint(self.table,self.list_var,pivot_col,pivot_row)
+                    
+            steps.append(table)
+            pivot_arounds.append(pivot_around)
             # keep a record of basic variables
             opt_point[pivot_row] = pivot_col
 
-        return opt_point
+        return opt_point,pivot_around,steps
 
     def two_phase(self):
         '''
@@ -211,14 +228,16 @@ class two_phase_simplex():
         artf_vars = self.new_opt_fun()
 
         # call the first phase
+        
         print("\n1st Phase....")
-        opt_point = self.simplex(init_opt_pt)
+
+        opt_point,pivot_around,steps = self.simplex(init_opt_pt)
         if (( self.table[-1][self.var]) != -1) or \
             len([i for i in self.table[-1] if i == -1]) > 2  or \
             (len([i for i in self.table[-1] if i == -1]) == 2 and self.table[-1][self.var] != -1) or \
             self.RHS[-1] != 0:
             #opt_value = None
-            return 'Bai toan vo nghiem',None
+            return 'Bai toan vo nghiem',None,steps,pivot_around
 
         
         # remove artificial variable set original OP function
@@ -231,18 +250,19 @@ class two_phase_simplex():
         for row, col in enumerate(opt_point):
             if col >= len(self.table[-1]):
                 #opt_value = None
-                return 'Bai toan vo nghiem',None
+                return 'Bai toan vo nghiem',None,steps,pivot_around
             if col < self.var:
                 self.table[-1] -= self.table[-1][col] * self.table[row]
 
         # call 2nd phase
         print("\n2nd Phase....")
-        opt_point = self.simplex(opt_point)
+        opt_point,pivot_around,steps = self.simplex(opt_point)
         if opt_point in ['Inf','-Inf']:
-            return 'Bai toan khong gioi noi',opt_point
+            return 'Bai toan khong gioi noi',opt_point,steps,pivot_around
         elif opt_point is None:
-            return 'Bai toan vo nghiem'
+            return 'Bai toan vo nghiem',opt_point,steps,pivot_around
         else:
-            return self.final_results(opt_point)
+            opt_point,opt_value = self.final_results(opt_point)
+            return opt_point,opt_value,steps,pivot_around
     
     

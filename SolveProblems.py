@@ -5,7 +5,7 @@ from Normalization import make_standard_form
 def solve_problem(user_inputs):
     problem = make_standard_form(user_inputs)
     
-    if (any(x < 0 for x in problem['constraints'])):
+    if (len(problem['var_none']) < len([x for x in problem['constraints'] if x < 0])):
         check_min = 1
         if user_inputs['objective'] == 'maximize':
             check_min = -1
@@ -16,7 +16,7 @@ def solve_problem(user_inputs):
         simx.standard_form()
 
         # call two-phase simplex method
-        opt_point, opt_value = simx.two_phase()
+        opt_point, opt_value, steps,pivot_arounds = simx.two_phase()
         print(opt_value)
         if not opt_value:
             sol = f"{opt_point}"
@@ -25,7 +25,7 @@ def solve_problem(user_inputs):
         else:
             sol = f"{opt_point}, Gia tri Z = {opt_value*check_min}"
         
-        return problem,sol,None,None
+        return problem,sol,steps,pivot_arounds
     else:
         problem['obj_func']*= -1
         
